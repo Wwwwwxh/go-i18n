@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"text/template"
 
-	"github.com/nicksnyder/go-i18n/v2/internal/plural"
+	"github.com/k8scat/go-i18n/v2/internal/plural"
 	"golang.org/x/text/language"
 )
 
@@ -16,6 +16,16 @@ type Localizer struct {
 	// tags is the list of language tags that the Localizer checks
 	// in order when localizing a message.
 	tags []language.Tag
+}
+
+// NewLocalizerWithTags returns a new Localizer that looks up messages
+// in the bundle according to the language preferences in tags.
+// It can parse Accept-Language headers as defined in http://www.ietf.org/rfc/rfc2616.txt.
+func NewLocalizerWithTags(bundle *Bundle, tags ...language.Tag) *Localizer {
+	return &Localizer{
+		bundle: bundle,
+		tags:   tags,
+	}
 }
 
 // NewLocalizer returns a new Localizer that looks up messages

@@ -1,4 +1,4 @@
-module github.com/nicksnyder/go-i18n/v2
+module github.com/k8scat/go-i18n/v2
 
 go 1.9
 
