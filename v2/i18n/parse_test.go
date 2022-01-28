@@ -1,6 +1,7 @@
 package i18n
 
 import (
+	"github.com/stretchr/testify/assert"
 	"reflect"
 	"sort"
 	"testing"
@@ -207,4 +208,29 @@ func equalMessages(m1, m2 []*Message) bool {
 		}
 	}
 	return true
+}
+
+func TestParsePath(t *testing.T) {
+	cases := []struct {
+		path   string
+		lang   string
+		format string
+	}{
+		{
+			path:   "/path/to/en.json",
+			lang:   "en",
+			format: "json",
+		},
+		{
+			path:   "/path/to/style.en.yaml",
+			lang:   "en",
+			format: "yaml",
+		},
+	}
+
+	for _, c := range cases {
+		lang, format := parsePath(c.path)
+		assert.Equal(t, c.lang, lang)
+		assert.Equal(t, c.format, format)
+	}
 }
