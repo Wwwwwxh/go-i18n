@@ -19,7 +19,40 @@ type MessageFile struct {
 }
 
 // ParseMessageFileBytes returns the messages parsed from file.
-func ParseMessageFileBytes(buf []byte, languageTag language.Tag,fileFormat string, unmarshalFuncs map[string]UnmarshalFunc) (*MessageFile, error) {
+func ParseMessageFileBytes(buf []byte, path string, unmarshalFuncs map[string]UnmarshalFunc) (*MessageFile, error) {
+	lang, format := parsePath(path)
+	tag := language.Make(lang)
+	messageFile := &MessageFile{
+		Path:   path,
+		Tag:    tag,
+		Format: format,
+	}
+	if len(buf) == 0 {
+		return messageFile, nil
+	}
+	unmarshalFunc := unmarshalFuncs[messageFile.Format]
+	if unmarshalFunc == nil {
+		if messageFile.Format == "json" {
+			unmarshalFunc = json.Unmarshal
+		} else {
+			return nil, fmt.Errorf("no unmarshaler registered for %s", messageFile.Format)
+		}
+	}
+	var err error
+	var raw interface{}
+	if err = unmarshalFunc(buf, &raw); err != nil {
+		return nil, err
+	}
+
+	if messageFile.Messages, err = recGetMessages(raw, isMessage(raw), true); err != nil {
+		return nil, err
+	}
+
+	return messageFile, nil
+}
+
+// ParseMessageFileBytesTest returns the messages parsed from file.
+func ParseMessageFileBytesTest(buf []byte, languageTag language.Tag,fileFormat string, unmarshalFuncs map[string]UnmarshalFunc) (*MessageFile, error) {
 	messageFile := &MessageFile{
 		Tag:    languageTag,
 		Format: fileFormat,
