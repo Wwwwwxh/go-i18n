@@ -5,8 +5,8 @@ import (
 
 	"text/template"
 
-	"github.com/k8scat/go-i18n/v2/internal"
-	"github.com/k8scat/go-i18n/v2/internal/plural"
+	"github.com/Wwwwwxh/go-i18n/v2/internal"
+	"github.com/Wwwwwxh/go-i18n/v2/internal/plural"
 )
 
 // MessageTemplate is an executable template for a message.
